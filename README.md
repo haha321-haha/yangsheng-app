@@ -135,16 +135,6 @@ Copyright © 2025 [haha321-haha]. All Rights Reserved.
 
 ## 🤝 参与贡献
 
-欢迎所有人参与改进这个项目！
-
-### 如何贡献
-
-1. Fork 本项目
-2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的更改 (`git commit -m '添加某个很棒的功能'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启一个 Pull Request
-
 ### 贡献方向
 
 - 🎨 UI/UX 优化
