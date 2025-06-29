@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#10b981">
+    <title>护阳保发智能系统v5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #065f46 0%, #059669 20%, #10b981 40%, #fbbf24 70%, #f59e0b 90%, #dc2626 100%);
+            min-height: 100vh;
+            padding: 12px;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 8px 32px rgba(6, 95, 70, 0.2);
+        }
+        
+        .title h1 {
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: bold;
+            background: linear-gradient(135deg, #065f46, #059669, #f59e0b, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .title p {
+            color: #065f46;
+            font-size: clamp(12px, 3vw, 16px);
+            font-weight: 600;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 2px solid #10b981;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+        
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        }
+        
+        .btn {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 2px solid #10b981;
+            background: rgba(255,255,255,0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-completed {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-color: #16a34a;
+            color: #166534;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-yang {
+            background: linear-gradient(90deg, #f87171, #fb923c);
+        }
+        
+        .progress-hair {
+            background: linear-gradient(90deg, #34d399, #10b981);
+        }
+        
+        .status-panel {
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .activity-btn {
+            text-align: center;
+            padding: 16px 12px;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            background: rgba(255,255,255,0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .activity-btn:hover {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+        
+        .activity-btn-recommended {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-color: #fbbf24;
+            box-shadow: 0 4px 16px rgba(251,191,36,0.3);
+        }
+        
+        .time-slot {
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 11px;
+            border: 2px solid #e5e7eb;
+            background: rgba(249,250,251,0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .time-slot-current {
+            border-color: #fbbf24;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            box-shadow: 0 4px 16px rgba(251,191,36,0.4);
+            transform: scale(1.05);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            max-width: 300px;
+            z-index: 1000;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(239,246,255,0.95);
+            border-left: 4px solid #2563eb;
+            color: #1e40af;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s ease;
+            display: none;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .center { text-align: center; }
+        .font-bold { font-weight: 700; }
+        .text-sm { font-size: 12px; }
+        .text-lg { font-size: 18px; }
+        .text-2xl { font-size: 24px; }
+        .text-3xl { font-size: 30px; }
+        
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-6 { margin-bottom: 24px; }
+        .mt-1 { margin-top: 4px; }
+        .mt-2 { margin-top: 8px; }
+        
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .flex-1 { flex: 1; }
+        .hidden { display: none; }
+        
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: 1fr; }
+            .card { padding: 16px; }
+        }
+        
+        @media (max-width: 480px) {
+            .grid-4, .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>🌸 护阳保发智能系统v5</h1>
+            <p>子午流注·五行调理·体质护阳·月相节气</p>
+            <div class="text-sm mt-2" id="currentDate"></div>
+        </div>
+
+        <!-- 通知区域 -->
+        <div id="notification" class="notification">
+            <div class="font-bold mb-2">🔔 系统通知</div>
+            <div id="notificationContent">🌸 护阳保发系统已启动！开始您的21天养生之旅吧！</div>
+            <span onclick="hideNotification()" style="float: right; cursor: pointer; font-weight: bold;">✕</span>
+        </div>
+
+        <!-- 当前时辰状态 -->
+        <div class="card">
+            <div class="grid grid-4 gap-4">
+                <div class="center">
+                    <div class="btn time-slot-current" style="border-color: #fbbf24; background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                        <span style="font-size: 24px;">☀️</span>
+                        <div class="font-bold" id="currentSlotName">辰时</div>
+                    </div>
+                    <div class="text-sm mt-1" id="timeRange">7:00 - 8:00</div>
+                </div>
+                
+                <div class="center">
+                    <div class="text-lg font-bold" id="organName">胃经</div>
+                    <div class="text-sm" id="activityName">早餐服药</div>
+                    <div class="text-xs mt-1" style="color: #7c3aed;">五行属土</div>
+                </div>
+                
+                <div class="center">
+                    <div class="text-lg font-bold" style="color: #7c3aed;">脾胃运化</div>
+                    <div class="text-sm">服药最佳时机</div>
+                </div>
+
+                <div class="center">
+                    <div class="text-sm font-bold" style="color: #dc2626;">体质风险</div>
+                    <div class="text-xs">不吃早餐伤胃气</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 月相节气调理 -->
+        <div class="grid grid-2 gap-4 mb-6">
+            <div class="card" style="background: linear-gradient(135deg, #eef2ff, #e0e7ff); border-color: #6366f1;">
+                <h3 class="font-bold mb-2" style="color: #4338ca;">🌙 月相养生 🌕</h3>
+                <div style="color: #4338ca;">
+                    <div class="font-bold">满月</div>
+                    <div class="text-sm mt-1">气血最旺，慎用热药，站桩时间可延长</div>
+                </div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, #fff7ed, #fed7aa); border-color: #ea580c;">
+                <h3 class="font-bold mb-2" style="color: #c2410c;">📅 节气调理</h3>
+                <div style="color: #c2410c;">
+                    <div class="font-bold">冬季护阳</div>
+                    <div class="text-sm mt-1">顺应天时，温补肾阳，21:00前入睡</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 黄历宜忌 -->
+        <div class="grid grid-2 gap-4 mb-6">
+            <div class="card" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-color: #16a34a;">
+                <h3 class="font-bold mb-2" style="color: #166534;">✅ 今日宜</h3>
+                <p style="color: #166534;">家务整理、养生保健、温补调理</p>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, #fef2f2, #fecaca); border-color: #dc2626;">
+                <h3 class="font-bold mb-2" style="color: #991b1b;">❌ 今日忌</h3>
+                <p style="color: #991b1b;">过度劳累、忽视休息、熬夜伤阳</p>
+            </div>
+        </div>
+
+        <!-- 核心状态面板 -->
+        <div class="grid grid-3 gap-4 mb-6">
+            <div class="status-panel" style="background: linear-gradient(135deg, #fef2f2, #fecaca); border-color: #dc2626;">
+                <div class="flex items-center gap-2 mb-2">
+                    <span style="font-size: 20px;">⚡</span>
+                    <span class="font-bold">阳气储备</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="progress-bar flex-1">
+                        <div class="progress-fill progress-yang" style="width: 100%"></div>
+                    </div>
+                    <span class="font-bold text-lg">100/100</span>
+                </div>
+                <div class="text-sm mt-1" style="color: #dc2626;">阳气充盈</div>
+            </div>
+
+            <div class="status-panel" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-color: #16a34a;">
+                <div class="flex items-center gap-2 mb-2">
+                    <span style="font-size: 20px;">💇</span>
+                    <span class="font-bold">头发健康</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="progress-bar flex-1">
+                        <div class="progress-fill progress-hair" style="width: 85%"></div>
+                    </div>
+                    <span class="font-bold text-lg">85/100</span>
+                </div>
+                <div class="text-sm mt-1" style="color: #16a34a;">浓密强健</div>
+            </div>
+
+            <div class="status-panel" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: #2563eb;">
+                <div class="flex items-center gap-2 mb-2">
+                    <span style="font-size: 20px;">⏰</span>
+                    <span class="font-bold">下次活动</span>
+                </div>
+                <div class="center">
+                    <div class="text-2xl font-bold" style="color: #2563eb;" id="activityTimer">44:32</div>
+                    <div class="text-sm">距离提醒</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 今日任务清单 -->
+        <div class="card">
+            <h3 class="text-lg font-bold mb-4" style="color: #065f46;">🎯 今日护阳任务清单</h3>
+            
+            <div class="grid grid-4 gap-4 mb-4">
+                <button class="btn" onclick="completeTask(this, '辰时服药')">
+                    <div class="font-bold">☀️ 辰时服药</div>
+                    <div class="text-sm">金匮肾气丸8g</div>
+                    <div class="text-xs mt-1" style="color: #6b7280;">7:30 胃经当令</div>
+                </button>
+
+                <button class="btn" onclick="completeTask(this, '巳时破瘀')">
+                    <div class="font-bold">🌞 巳时破瘀</div>
+                    <div class="text-sm">血府逐瘀丸5g</div>
+                    <div class="text-xs mt-1" style="color: #6b7280;">9:30 脾经旺盛</div>
+                </button>
+
+                <button class="btn" onclick="completeTask(this, '申时站桩')">
+                    <div class="font-bold">🧘 申时站桩</div>
+                    <div class="text-sm">膀胱经补阳</div>
+                    <div class="text-xs mt-1" style="color: #6b7280;">18:00前完成</div>
+                </button>
+
+                <button class="btn" onclick="completeTask(this, '三焦经艾灸')">
+                    <div class="font-bold">🔥 三焦经艾灸</div>
+                    <div class="text-sm">21:00开始</div>
+                    <div class="text-xs mt-1" style="color: #6b7280;">周一三五</div>
+                </button>
+            </div>
+
+            <!-- 晚间程序 -->
+            <div class="card" style="background: linear-gradient(135deg, #faf5ff, #f3e8ff); border-color: #7c3aed;">
+                <h4 class="font-bold mb-2" style="color: #6b21a8;">🌙 亥时护阳程序（21:00启动）</h4>
+                <div class="grid grid-4 gap-2">
+                    <button class="btn text-sm" onclick="completeTask(this, '洗碗')">⏰ 洗碗</button>
+                    <button class="btn text-sm" onclick="completeTask(this, '洗脸')">⏰ 洗脸</button>
+                    <button class="btn text-sm" onclick="completeTask(this, '刷牙')">⏰ 刷牙</button>
+                    <button class="btn text-sm" onclick="completeTask(this, '手机归位')">⏰ 手机归位</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 45分钟活动系统 -->
+        <div class="card" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: #2563eb;">
+            <h3 class="text-lg font-bold mb-4" style="color: #1e40af;">💪 五行活动系统 - 45分钟循环 (0/8次)</h3>
+            
+            <div class="grid grid-3 gap-3 mb-4">
+                <div class="activity-btn activity-btn-recommended" onclick="completeActivity(this, '金刚坐', 8)">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🧘</div>
+                    <div class="font-bold text-sm">金刚坐</div>
+                    <div class="text-xs mb-1" style="color: #6b7280;">5-10分钟</div>
+                    <div class="text-xs" style="color: #2563eb;">+8阳气</div>
+                    <div class="text-xs font-bold mt-1" style="color: #92400e;">辰时推荐</div>
+                </div>
+
+                <div class="activity-btn" onclick="completeActivity(this, '踮脚补肾', 6)">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🦵</div>
+                    <div class="font-bold text-sm">踮脚补肾</div>
+                    <div class="text-xs mb-1" style="color: #6b7280;">3分钟</div>
+                    <div class="text-xs" style="color: #2563eb;">+6阳气</div>
+                </div>
+
+                <div class="activity-btn" onclick="completeActivity(this, '室内漫步', 5)">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🚶</div>
+                    <div class="font-bold text-sm">室内漫步</div>
+                    <div class="text-xs mb-1" style="color: #6b7280;">5分钟</div>
+                    <div class="text-xs" style="color: #2563eb;">+5阳气</div>
+                </div>
+
+                <div class="activity-btn" onclick="completeActivity(this, '远眺护眼', 4)">
+                    <div style="font-size: 28px; margin-bottom: 8px;">👁️</div>
+                    <div class="font-bold text-sm">远眺护眼</div>
+                    <div class="text-xs mb-1" style="color: #6b7280;">3分钟</div>
+                    <div class="text-xs" style="color: #2563eb;">+4阳气</div>
+                </div>
+
+                <div class="activity-btn" onclick="completeActivity(this, '背部采阳', 12)">
+                    <div style="font-size: 28px; margin-bottom: 8px;">☀️</div>
+                    <div class="font-bold text-sm">背部采阳</div>
+                    <div class="text-xs mb-1" style="color: #6b7280;">10分钟</div>
+                    <div class="text-xs" style="color: #2563eb;">+12阳气</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 十二时辰经络流注图 -->
+        <div class="card">
+            <h3 class="text-lg font-bold mb-4" style="color: #065f46;">🕐 十二时辰子午流注图</h3>
+            <div class="grid grid-4 gap-3">
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>💧</span><span class="font-bold">子时</span>
+                    </div>
+                    <div class="font-bold">胆经</div>
+                    <div class="mb-1" style="color: #6b7280;">23-0时</div>
+                    <div style="color: #6b7280;">深度睡眠</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>🌲</span><span class="font-bold">丑时</span>
+                    </div>
+                    <div class="font-bold">肝经</div>
+                    <div class="mb-1" style="color: #6b7280;">1-2时</div>
+                    <div style="color: #6b7280;">肝血回流</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>⛰️</span><span class="font-bold">寅时</span>
+                    </div>
+                    <div class="font-bold">肺经</div>
+                    <div class="mb-1" style="color: #6b7280;">3-4时</div>
+                    <div style="color: #6b7280;">深度睡眠</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>⛰️</span><span class="font-bold">卯时</span>
+                    </div>
+                    <div class="font-bold">大肠经</div>
+                    <div class="mb-1" style="color: #6b7280;">5-6时</div>
+                    <div style="color: #6b7280;">晨起排毒</div>
+                </div>
+
+                <div class="time-slot time-slot-current">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>☀️</span><span class="font-bold">辰时</span>
+                    </div>
+                    <div class="font-bold">胃经</div>
+                    <div class="mb-1" style="color: #6b7280;">7-8时</div>
+                    <div style="color: #6b7280;">早餐服药</div>
+                    <div style="background: #fbbf24; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; margin-top: 8px;">当前时辰</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>☀️</span><span class="font-bold">巳时</span>
+                    </div>
+                    <div class="font-bold">脾经</div>
+                    <div class="mb-1" style="color: #6b7280;">9-10时</div>
+                    <div style="color: #6b7280;">工作学习</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>🔥</span><span class="font-bold">午时</span>
+                    </div>
+                    <div class="font-bold">心经</div>
+                    <div class="mb-1" style="color: #6b7280;">11-12时</div>
+                    <div style="color: #6b7280;">心神最旺</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>🔥</span><span class="font-bold">未时</span>
+                    </div>
+                    <div class="font-bold">小肠经</div>
+                    <div class="mb-1" style="color: #6b7280;">13-14时</div>
+                    <div style="color: #6b7280;">午休消化</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>💧</span><span class="font-bold">申时</span>
+                    </div>
+                    <div class="font-bold">膀胱经</div>
+                    <div class="mb-1" style="color: #6b7280;">15-16时</div>
+                    <div style="color: #6b7280;">站桩时间</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>💧</span><span class="font-bold">酉时</span>
+                    </div>
+                    <div class="font-bold">肾经</div>
+                    <div class="mb-1" style="color: #6b7280;">17-18时</div>
+                    <div style="color: #6b7280;">收工回家</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>🔥</span><span class="font-bold">戌时</span>
+                    </div>
+                    <div class="font-bold">心包经</div>
+                    <div class="mb-1" style="color: #6b7280;">19-20时</div>
+                    <div style="color: #6b7280;">放松休息</div>
+                </div>
+
+                <div class="time-slot">
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>🔥</span><span class="font-bold">亥时</span>
+                    </div>
+                    <div class="font-bold">三焦经</div>
+                    <div class="mb-1" style="color: #6b7280;">21-22时</div>
+                    <div style="color: #6b7280;">准备入睡</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 今日总结 -->
+        <div class="card" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-color: #f59e0b;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold" style="color: #92400e;">🏆 今日护阳成果总览</h3>
+                <span class="text-3xl font-bold" style="color: #d97706;" id="completionRate">0%</span>
+            </div>
+            
+            <div class="grid grid-4 gap-4 text-sm mb-4">
+                <div class="center">
+                    <div class="text-2xl mb-1">⚡</div>
+                    <div class="font-bold">阳气值</div>
+                    <div style="color: #d97706;">100/100</div>
+                </div>
+                
+                <div class="center">
+                    <div class="text-2xl mb-1">💪</div>
+                    <div class="font-bold">活动次数</div>
+                    <div style="color: #d97706;" id="activityCount">0/8次</div>
+                </div>
+                
+                <div class="center">
+                    <div class="text-2xl mb-1">💊</div>
+                    <div class="font-bold">服药情况</div>
+                    <div style="color: #d97706;" id="medCount">0/3次</div>
+                </div>
+
+                <div class="center">
+                    <div class="text-2xl mb-1">🏆</div>
+                    <div class="font-bold">任务达成</div>
+                    <div style="color: #d97706;" id="taskCount">0/10项</div>
+                </div>
+            </div>
+
+            <div class="center" style="color: #92400e;">
+                <div class="text-lg font-bold mb-2">💪 2024目标：不熬夜·护阳气·保头发</div>
+                <div class="text-sm">
+                    🌸 基于脾肾阳虚血瘀体质的完整调理方案，坚持21天见证阳气回升！
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简化的状态管理
+        let completedTasks = 0;
+        let completedActivities = 0;
+        let completedMeds = 0;
+        let activityTimer = 44 * 60 + 32; // 44分32秒
+
+        // 显示通知
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            document.getElementById('notificationContent').textContent = message;
+            notification.style.display = 'block';
+            setTimeout(hideNotification, 3000);
+        }
+
+        function hideNotification() {
+            document.getElementById('notification').style.display = 'none';
+        }
+
+        // 完成任务
+        function completeTask(button, taskName) {
+            if (!button.classList.contains('btn-completed')) {
+                button.classList.add('btn-completed');
+                button.innerHTML = button.innerHTML.replace('⏰', '✅');
+                completedTasks++;
+                
+                if (['辰时服药', '巳时破瘀', '交泰丸'].includes(taskName)) {
+                    completedMeds++;
+                    document.getElementById('medCount').textContent = completedMeds + '/3次';
+                }
+                
+                updateSummary();
+                showNotification(`✅ ${taskName}完成！`);
+            }
+        }
+
+        // 完成活动
+        function completeActivity(button, activityName, yangBonus) {
+            if (!button.classList.contains('btn-completed')) {
+                button.classList.add('btn-completed');
+                button.style.background = 'linear-gradient(135deg, #dcfce7, #bbf7d0)';
+                button.style.borderColor = '#16a34a';
+                
+                completedActivities++;
+                document.getElementById('activityCount').textContent = completedActivities + '/8次';
+                
+                updateSummary();
+                showNotification(`${activityName}完成！阳气+${yangBonus}`);
+                
+                // 重置45分钟计时器
+                activityTimer = 45 * 60;
+            }
+        }
+
+        // 更新总结
+        function updateSummary() {
+            document.getElementById('taskCount').textContent = completedTasks + '/10项';
+            const completionRate = Math.round(((completedTasks * 70) / 10) + (completedActivities * 3));
+            document.getElementById('completionRate').textContent = Math.min(100, completionRate) + '%';
+        }
+
+        // 更新活动计时器
+        function updateActivityTimer() {
+            if (activityTimer > 0) {
+                activityTimer--;
+                const minutes = Math.floor(activityTimer / 60);
+                const seconds = activityTimer % 60;
+                document.getElementById('activityTimer').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                document.getElementById('activityTimer').textContent = '该活动了！';
+                if (activityTimer === 0) {
+                    showNotification('⏰ 45分钟到！该活动了！');
+                    activityTimer = -1; // 防止重复提醒
+                }
+            }
+        }
+
+        // 更新当前时间
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('zh-CN', { 
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' 
+                });
+        }
+
+        // 初始化
+        function init() {
+            updateCurrentTime();
+            updateSummary();
+            
+            // 每秒更新计时器
+            setInterval(updateActivityTimer, 1000);
+            
+            // 显示欢迎通知
+            setTimeout(() => {
+                showNotification('🌸 护阳保发系统v5已启动！开始您的21天养生之旅吧！');
+            }, 1000);
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
