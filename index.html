@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#10b981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>护阳保发智能系统v5</title>
     <style>
         * {
@@ -253,7 +255,7 @@
             <div class="grid grid-4 gap-4">
                 <div class="center">
                     <div class="btn time-slot-current" style="border-color: #fbbf24; background: linear-gradient(135deg, #fef3c7, #fde68a);">
-                        <span style="font-size: 24px;">☀️</span>
+                        <span style="font-size: 24px;" id="currentIcon">☀️</span>
                         <div class="font-bold" id="currentSlotName">辰时</div>
                     </div>
                     <div class="text-sm mt-1" id="timeRange">7:00 - 8:00</div>
@@ -262,17 +264,17 @@
                 <div class="center">
                     <div class="text-lg font-bold" id="organName">胃经</div>
                     <div class="text-sm" id="activityName">早餐服药</div>
-                    <div class="text-xs mt-1" style="color: #7c3aed;">五行属土</div>
+                    <div class="text-xs mt-1" style="color: #7c3aed;" id="elementInfo">五行属土</div>
                 </div>
                 
                 <div class="center">
-                    <div class="text-lg font-bold" style="color: #7c3aed;">脾胃运化</div>
-                    <div class="text-sm">服药最佳时机</div>
+                    <div class="text-lg font-bold" style="color: #7c3aed;" id="functionInfo">脾胃运化</div>
+                    <div class="text-sm" id="bestTime">服药最佳时机</div>
                 </div>
 
                 <div class="center">
                     <div class="text-sm font-bold" style="color: #dc2626;">体质风险</div>
-                    <div class="text-xs">不吃早餐伤胃气</div>
+                    <div class="text-xs" id="riskInfo">不吃早餐伤胃气</div>
                 </div>
             </div>
         </div>
@@ -280,18 +282,18 @@
         <!-- 月相节气调理 -->
         <div class="grid grid-2 gap-4 mb-6">
             <div class="card" style="background: linear-gradient(135deg, #eef2ff, #e0e7ff); border-color: #6366f1;">
-                <h3 class="font-bold mb-2" style="color: #4338ca;">🌙 月相养生 🌕</h3>
+                <h3 class="font-bold mb-2" style="color: #4338ca;">🌙 月相养生 <span id="moonPhase">🌕</span></h3>
                 <div style="color: #4338ca;">
-                    <div class="font-bold">满月</div>
-                    <div class="text-sm mt-1">气血最旺，慎用热药，站桩时间可延长</div>
+                    <div class="font-bold" id="moonPhaseName">满月</div>
+                    <div class="text-sm mt-1" id="moonAdvice">气血最旺，慎用热药，站桩时间可延长</div>
                 </div>
             </div>
             
             <div class="card" style="background: linear-gradient(135deg, #fff7ed, #fed7aa); border-color: #ea580c;">
                 <h3 class="font-bold mb-2" style="color: #c2410c;">📅 节气调理</h3>
                 <div style="color: #c2410c;">
-                    <div class="font-bold">冬季护阳</div>
-                    <div class="text-sm mt-1">顺应天时，温补肾阳，21:00前入睡</div>
+                    <div class="font-bold" id="seasonName">冬季护阳</div>
+                    <div class="text-sm mt-1" id="seasonAdvice">顺应天时，温补肾阳，21:00前入睡</div>
                 </div>
             </div>
         </div>
@@ -395,159 +397,18 @@
 
         <!-- 45分钟活动系统 -->
         <div class="card" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: #2563eb;">
-            <h3 class="text-lg font-bold mb-4" style="color: #1e40af;">💪 五行活动系统 - 45分钟循环 (0/8次)</h3>
+            <h3 class="text-lg font-bold mb-4" style="color: #1e40af;">💪 五行活动系统 - 45分钟循环 <span id="activityCountDisplay">(0/8次)</span></h3>
             
-            <div class="grid grid-3 gap-3 mb-4">
-                <div class="activity-btn activity-btn-recommended" onclick="completeActivity(this, '金刚坐', 8)">
-                    <div style="font-size: 28px; margin-bottom: 8px;">🧘</div>
-                    <div class="font-bold text-sm">金刚坐</div>
-                    <div class="text-xs mb-1" style="color: #6b7280;">5-10分钟</div>
-                    <div class="text-xs" style="color: #2563eb;">+8阳气</div>
-                    <div class="text-xs font-bold mt-1" style="color: #92400e;">辰时推荐</div>
-                </div>
-
-                <div class="activity-btn" onclick="completeActivity(this, '踮脚补肾', 6)">
-                    <div style="font-size: 28px; margin-bottom: 8px;">🦵</div>
-                    <div class="font-bold text-sm">踮脚补肾</div>
-                    <div class="text-xs mb-1" style="color: #6b7280;">3分钟</div>
-                    <div class="text-xs" style="color: #2563eb;">+6阳气</div>
-                </div>
-
-                <div class="activity-btn" onclick="completeActivity(this, '室内漫步', 5)">
-                    <div style="font-size: 28px; margin-bottom: 8px;">🚶</div>
-                    <div class="font-bold text-sm">室内漫步</div>
-                    <div class="text-xs mb-1" style="color: #6b7280;">5分钟</div>
-                    <div class="text-xs" style="color: #2563eb;">+5阳气</div>
-                </div>
-
-                <div class="activity-btn" onclick="completeActivity(this, '远眺护眼', 4)">
-                    <div style="font-size: 28px; margin-bottom: 8px;">👁️</div>
-                    <div class="font-bold text-sm">远眺护眼</div>
-                    <div class="text-xs mb-1" style="color: #6b7280;">3分钟</div>
-                    <div class="text-xs" style="color: #2563eb;">+4阳气</div>
-                </div>
-
-                <div class="activity-btn" onclick="completeActivity(this, '背部采阳', 12)">
-                    <div style="font-size: 28px; margin-bottom: 8px;">☀️</div>
-                    <div class="font-bold text-sm">背部采阳</div>
-                    <div class="text-xs mb-1" style="color: #6b7280;">10分钟</div>
-                    <div class="text-xs" style="color: #2563eb;">+12阳气</div>
-                </div>
+            <div class="grid grid-3 gap-3 mb-4" id="activityGrid">
+                <!-- 活动按钮将根据时辰动态生成 -->
             </div>
         </div>
 
         <!-- 十二时辰经络流注图 -->
         <div class="card">
             <h3 class="text-lg font-bold mb-4" style="color: #065f46;">🕐 十二时辰子午流注图</h3>
-            <div class="grid grid-4 gap-3">
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>💧</span><span class="font-bold">子时</span>
-                    </div>
-                    <div class="font-bold">胆经</div>
-                    <div class="mb-1" style="color: #6b7280;">23-0时</div>
-                    <div style="color: #6b7280;">深度睡眠</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>🌲</span><span class="font-bold">丑时</span>
-                    </div>
-                    <div class="font-bold">肝经</div>
-                    <div class="mb-1" style="color: #6b7280;">1-2时</div>
-                    <div style="color: #6b7280;">肝血回流</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>⛰️</span><span class="font-bold">寅时</span>
-                    </div>
-                    <div class="font-bold">肺经</div>
-                    <div class="mb-1" style="color: #6b7280;">3-4时</div>
-                    <div style="color: #6b7280;">深度睡眠</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>⛰️</span><span class="font-bold">卯时</span>
-                    </div>
-                    <div class="font-bold">大肠经</div>
-                    <div class="mb-1" style="color: #6b7280;">5-6时</div>
-                    <div style="color: #6b7280;">晨起排毒</div>
-                </div>
-
-                <div class="time-slot time-slot-current">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>☀️</span><span class="font-bold">辰时</span>
-                    </div>
-                    <div class="font-bold">胃经</div>
-                    <div class="mb-1" style="color: #6b7280;">7-8时</div>
-                    <div style="color: #6b7280;">早餐服药</div>
-                    <div style="background: #fbbf24; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; margin-top: 8px;">当前时辰</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>☀️</span><span class="font-bold">巳时</span>
-                    </div>
-                    <div class="font-bold">脾经</div>
-                    <div class="mb-1" style="color: #6b7280;">9-10时</div>
-                    <div style="color: #6b7280;">工作学习</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>🔥</span><span class="font-bold">午时</span>
-                    </div>
-                    <div class="font-bold">心经</div>
-                    <div class="mb-1" style="color: #6b7280;">11-12时</div>
-                    <div style="color: #6b7280;">心神最旺</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>🔥</span><span class="font-bold">未时</span>
-                    </div>
-                    <div class="font-bold">小肠经</div>
-                    <div class="mb-1" style="color: #6b7280;">13-14时</div>
-                    <div style="color: #6b7280;">午休消化</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>💧</span><span class="font-bold">申时</span>
-                    </div>
-                    <div class="font-bold">膀胱经</div>
-                    <div class="mb-1" style="color: #6b7280;">15-16时</div>
-                    <div style="color: #6b7280;">站桩时间</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>💧</span><span class="font-bold">酉时</span>
-                    </div>
-                    <div class="font-bold">肾经</div>
-                    <div class="mb-1" style="color: #6b7280;">17-18时</div>
-                    <div style="color: #6b7280;">收工回家</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>🔥</span><span class="font-bold">戌时</span>
-                    </div>
-                    <div class="font-bold">心包经</div>
-                    <div class="mb-1" style="color: #6b7280;">19-20时</div>
-                    <div style="color: #6b7280;">放松休息</div>
-                </div>
-
-                <div class="time-slot">
-                    <div class="flex items-center justify-center gap-1 mb-2">
-                        <span>🔥</span><span class="font-bold">亥时</span>
-                    </div>
-                    <div class="font-bold">三焦经</div>
-                    <div class="mb-1" style="color: #6b7280;">21-22时</div>
-                    <div style="color: #6b7280;">准备入睡</div>
-                </div>
+            <div class="grid grid-4 gap-3" id="timeSlotGrid">
+                <!-- 时辰格子将动态生成 -->
             </div>
         </div>
 
@@ -594,11 +455,191 @@
     </div>
 
     <script>
-        // 简化的状态管理
+        // 十二时辰数据
+        const timeSlots = [
+            { name: '子时', organ: '胆经', time: '23:00-0:59', icon: '💧', element: '水', activity: '深度睡眠', function: '阳气生发', risk: '熬夜伤胆', startHour: 23 },
+            { name: '丑时', organ: '肝经', time: '1:00-2:59', icon: '🌲', element: '木', activity: '肝血回流', function: '养血藏血', risk: '熬夜伤肝', startHour: 1 },
+            { name: '寅时', organ: '肺经', time: '3:00-4:59', icon: '⛰️', element: '金', activity: '深度睡眠', function: '肺气肃降', risk: '失眠伤肺', startHour: 3 },
+            { name: '卯时', organ: '大肠经', time: '5:00-6:59', icon: '⛰️', element: '金', activity: '晨起排毒', function: '排浊通便', risk: '憋便伤肠', startHour: 5 },
+            { name: '辰时', organ: '胃经', time: '7:00-8:59', icon: '☀️', element: '土', activity: '早餐服药', function: '脾胃运化', risk: '不吃早餐伤胃气', startHour: 7 },
+            { name: '巳时', organ: '脾经', time: '9:00-10:59', icon: '☀️', element: '土', activity: '工作学习', function: '运化精微', risk: '过度思虑伤脾', startHour: 9 },
+            { name: '午时', organ: '心经', time: '11:00-12:59', icon: '🔥', element: '火', activity: '心神最旺', function: '心主神明', risk: '过度兴奋伤心', startHour: 11 },
+            { name: '未时', organ: '小肠经', time: '13:00-14:59', icon: '🔥', element: '火', activity: '午休消化', function: '分清泌浊', risk: '饱食伤小肠', startHour: 13 },
+            { name: '申时', organ: '膀胱经', time: '15:00-16:59', icon: '💧', element: '水', activity: '站桩时间', function: '阳气输布', risk: '久坐伤膀胱', startHour: 15 },
+            { name: '酉时', organ: '肾经', time: '17:00-18:59', icon: '💧', element: '水', activity: '收工回家', function: '肾藏精气', risk: '过劳伤肾', startHour: 17 },
+            { name: '戌时', organ: '心包经', time: '19:00-20:59', icon: '🔥', element: '火', activity: '放松休息', function: '护心安神', risk: '情绪波动伤心包', startHour: 19 },
+            { name: '亥时', organ: '三焦经', time: '21:00-22:59', icon: '🔥', element: '火', activity: '准备入睡', function: '三焦通调', risk: '熬夜伤三焦', startHour: 21 }
+        ];
+
+        // 活动系统数据
+        const activities = [
+            { name: '金刚坐', icon: '🧘', duration: '5-10分钟', yang: 8, recommended: ['辰时', '巳时'] },
+            { name: '踮脚补肾', icon: '🦵', duration: '3分钟', yang: 6, recommended: ['申时', '酉时'] },
+            { name: '室内漫步', icon: '🚶', duration: '5分钟', yang: 5, recommended: ['未时', '申时'] },
+            { name: '远眺护眼', icon: '👁️', duration: '3分钟', yang: 4, recommended: ['巳时', '午时'] },
+            { name: '背部采阳', icon: '☀️', duration: '10分钟', yang: 12, recommended: ['辰时', '巳时', '午时'] }
+        ];
+
+        // 月相数据
+        const moonPhases = [
+            { name: '新月', icon: '🌑', advice: '阳气初生，宜静养，少用发散药物' },
+            { name: '上弦月', icon: '🌓', advice: '阳气渐长，可适度运动，温补为主' },
+            { name: '满月', icon: '🌕', advice: '气血最旺，慎用热药，站桩时间可延长' },
+            { name: '下弦月', icon: '🌗', advice: '阴气渐长，注意保暖，早睡养阴' }
+        ];
+
+        // 季节调理
+        const seasons = [
+            { name: '春季养肝', advice: '疏肝理气，少酸多甘，23:00前入睡' },
+            { name: '夏季养心', advice: '清心降火，苦味清心，午休养心' },
+            { name: '秋季养肺', advice: '润肺防燥，白色食物，早睡早起' },
+            { name: '冬季护阳', advice: '顺应天时，温补肾阳，21:00前入睡' }
+        ];
+
+        // 状态管理
         let completedTasks = 0;
         let completedActivities = 0;
         let completedMeds = 0;
-        let activityTimer = 44 * 60 + 32; // 44分32秒
+        let activityTimer = 44 * 60 + 32;
+        let currentTimeSlot = null;
+
+        // 获取当前时辰
+        function getCurrentTimeSlot() {
+            const now = new Date();
+            const hour = now.getHours();
+            
+            for (let slot of timeSlots) {
+                if (slot.startHour === 23) {
+                    if (hour === 23 || hour === 0) return slot;
+                } else if (slot.startHour <= hour && hour < slot.startHour + 2) {
+                    return slot;
+                }
+            }
+            return timeSlots[0]; // 默认返回子时
+        }
+
+        // 更新当前时辰显示
+        function updateCurrentTimeSlot() {
+            const slot = getCurrentTimeSlot();
+            currentTimeSlot = slot;
+            
+            // 更新当前时辰信息
+            document.getElementById('currentIcon').textContent = slot.icon;
+            document.getElementById('currentSlotName').textContent = slot.name;
+            document.getElementById('timeRange').textContent = slot.time;
+            document.getElementById('organName').textContent = slot.organ;
+            document.getElementById('activityName').textContent = slot.activity;
+            document.getElementById('elementInfo').textContent = `五行属${slot.element}`;
+            document.getElementById('functionInfo').textContent = slot.function;
+            document.getElementById('bestTime').textContent = getBestTimeAdvice(slot.name);
+            document.getElementById('riskInfo').textContent = slot.risk;
+            
+            // 更新时辰流注图
+            updateTimeSlotGrid();
+            
+            // 更新活动推荐
+            updateActivityRecommendations();
+        }
+
+        // 获取最佳时间建议
+        function getBestTimeAdvice(slotName) {
+            const advices = {
+                '子时': '睡眠养胆',
+                '丑时': '深睡养肝',
+                '寅时': '深睡养肺',
+                '卯时': '排便最佳',
+                '辰时': '服药最佳时机',
+                '巳时': '工作黄金期',
+                '午时': '午休养心',
+                '未时': '消化吸收',
+                '申时': '运动最佳',
+                '酉时': '补肾良机',
+                '戌时': '心包调理',
+                '亥时': '准备睡眠'
+            };
+            return advices[slotName] || '养生调理';
+        }
+
+        // 更新时辰流注图
+        function updateTimeSlotGrid() {
+            const grid = document.getElementById('timeSlotGrid');
+            grid.innerHTML = '';
+            
+            timeSlots.forEach(slot => {
+                const div = document.createElement('div');
+                div.className = 'time-slot';
+                if (slot.name === currentTimeSlot.name) {
+                    div.className += ' time-slot-current';
+                }
+                
+                div.innerHTML = `
+                    <div class="flex items-center justify-center gap-1 mb-2">
+                        <span>${slot.icon}</span><span class="font-bold">${slot.name}</span>
+                    </div>
+                    <div class="font-bold">${slot.organ}</div>
+                    <div class="mb-1" style="color: #6b7280;">${slot.time.replace('-', '-')}</div>
+                    <div style="color: #6b7280;">${slot.activity}</div>
+                    ${slot.name === currentTimeSlot.name ? '<div style="background: #fbbf24; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; margin-top: 8px;">当前时辰</div>' : ''}
+                `;
+                
+                grid.appendChild(div);
+            });
+        }
+
+        // 更新活动推荐
+        function updateActivityRecommendations() {
+            const grid = document.getElementById('activityGrid');
+            grid.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const div = document.createElement('div');
+                div.className = 'activity-btn';
+                
+                // 检查是否为当前时辰推荐
+                if (activity.recommended.includes(currentTimeSlot.name)) {
+                    div.className += ' activity-btn-recommended';
+                }
+                
+                div.innerHTML = `
+                    <div style="font-size: 28px; margin-bottom: 8px;">${activity.icon}</div>
+                    <div class="font-bold text-sm">${activity.name}</div>
+                    <div class="text-xs mb-1" style="color: #6b7280;">${activity.duration}</div>
+                    <div class="text-xs" style="color: #2563eb;">+${activity.yang}阳气</div>
+                    ${activity.recommended.includes(currentTimeSlot.name) ? '<div class="text-xs font-bold mt-1" style="color: #92400e;">当前推荐</div>' : ''}
+                `;
+                
+                div.onclick = () => completeActivity(div, activity.name, activity.yang);
+                grid.appendChild(div);
+            });
+        }
+
+        // 更新月相
+        function updateMoonPhase() {
+            // 简单模拟，实际应用需要准确的月相计算
+            const dayOfMonth = new Date().getDate();
+            let phase = moonPhases[0];
+            
+            if (dayOfMonth >= 7 && dayOfMonth < 15) phase = moonPhases[1];
+            else if (dayOfMonth >= 15 && dayOfMonth < 22) phase = moonPhases[2];
+            else if (dayOfMonth >= 22) phase = moonPhases[3];
+            
+            document.getElementById('moonPhase').textContent = phase.icon;
+            document.getElementById('moonPhaseName').textContent = phase.name;
+            document.getElementById('moonAdvice').textContent = phase.advice;
+        }
+
+        // 更新季节
+        function updateSeason() {
+            const month = new Date().getMonth();
+            let season = seasons[3]; // 默认冬季
+            
+            if (month >= 2 && month <= 4) season = seasons[0]; // 春季
+            else if (month >= 5 && month <= 7) season = seasons[1]; // 夏季
+            else if (month >= 8 && month <= 10) season = seasons[2]; // 秋季
+            
+            document.getElementById('seasonName').textContent = season.name;
+            document.getElementById('seasonAdvice').textContent = season.advice;
+        }
 
         // 显示通知
         function showNotification(message) {
@@ -638,6 +679,7 @@
                 
                 completedActivities++;
                 document.getElementById('activityCount').textContent = completedActivities + '/8次';
+                document.getElementById('activityCountDisplay').textContent = `(${completedActivities}/8次)`;
                 
                 updateSummary();
                 showNotification(`${activityName}完成！阳气+${yangBonus}`);
@@ -666,7 +708,7 @@
                 document.getElementById('activityTimer').textContent = '该活动了！';
                 if (activityTimer === 0) {
                     showNotification('⏰ 45分钟到！该活动了！');
-                    activityTimer = -1; // 防止重复提醒
+                    activityTimer = -1;
                 }
             }
         }
@@ -683,14 +725,26 @@
         // 初始化
         function init() {
             updateCurrentTime();
+            updateCurrentTimeSlot();
+            updateMoonPhase();
+            updateSeason();
             updateSummary();
             
             // 每秒更新计时器
             setInterval(updateActivityTimer, 1000);
             
+            // 每分钟检查时辰变化
+            setInterval(() => {
+                const newSlot = getCurrentTimeSlot();
+                if (newSlot.name !== currentTimeSlot.name) {
+                    updateCurrentTimeSlot();
+                    showNotification(`⏰ 现在是${newSlot.name}，${newSlot.organ}当令！`);
+                }
+            }, 60000);
+            
             // 显示欢迎通知
             setTimeout(() => {
-                showNotification('🌸 护阳保发系统v5已启动！开始您的21天养生之旅吧！');
+                showNotification(`🌸 现在是${currentTimeSlot.name}（${currentTimeSlot.time}），${currentTimeSlot.organ}当令！`);
             }, 1000);
         }
 
